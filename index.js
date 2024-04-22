@@ -1,4 +1,5 @@
 //const process.env.PORT = 4000;
+const port = process.env.PORT || 4000;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -13,7 +14,7 @@ app.use(cors());
 
 //Database connection with MongoDB
 // mongoose.connect("mongodb+srv://masterjinkal:Jinkal123@cluster0.oiumjlq.mongodb.net/towntrove");
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://masterjinkal:Jinkal123@cluster0.oiumjlq.mongodb.net/towntrove");
 
 //API creation
 
@@ -124,11 +125,28 @@ app.post('/removeproduct', async (req,res) => {
 
 //create endpoint using which we will get all the products in the database, using that we can display the products in out front end 
 //Creating API for getting all products 
-app.get('/allproducts', async (req,res) => {
+// app.get('/allproducts', async (req,res) => {
+//     let products = await Product.find({});
+//     console.log("All Products Fetched");
+//     //console.log(products);
+//     res.send(products);
+// })
+app.get('/allproducts', async (req, res) => {
     let products = await Product.find({});
     console.log("All Products Fetched");
-    //console.log(products);
-    res.send(products);
+
+    // Modify products to include necessary details and image URL
+    const modifiedProducts = products.map(product => ({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        new_price: product.new_price,
+        old_price: product.old_price,
+        // ... other desired details
+        image: `/images/${req.file.filename}`  // Construct image URL using retrieved filename
+    }));
+
+    res.send(modifiedProducts);
 })
 
 //API for user creation 
@@ -225,7 +243,17 @@ app.post('/login', async (req,res) => {
 app.get('/newcollection', async (req,res) => {
     let products = await Product.find({});
     //we will slice the product array 
-    let newcollection = products.slice(1).slice(-8); //using this, we will get recently added new products in newcollection array
+    const modifiedProducts = products.map(product => ({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        new_price: product.new_price,
+        old_price: product.old_price,
+        // ... other desired details
+        image: `/images/${req.file.filename}`  // Construct image URL using retrieved filename
+    }));
+
+    let newcollection = modifiedProducts.slice(1).slice(-8); //using this, we will get recently added new products in newcollection array
     console.log("New Collection Fetched");
     res.send(newcollection);
 })
@@ -233,7 +261,18 @@ app.get('/newcollection', async (req,res) => {
 //Creating endpoint for popular-in-women section
 app.get('/popularinwomen', async (req,res) => {
     let products = await Product.find({category: "women"}); //it will search for women categrory in schema and all in this will be added to products
-    let popular_in_women = products.slice(0,4);
+
+    const modifiedProducts = products.map(product => ({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        new_price: product.new_price,
+        old_price: product.old_price,
+        // ... other desired details
+        image: `/images/${req.file.filename}`  // Construct image URL using retrieved filename
+    }));
+
+    let popular_in_women =modifiedProducts.slice(0,4);
     console.log("Popular in women fetched");
 
     res.send(popular_in_women);
@@ -301,11 +340,10 @@ app.post('/getcart', fetchUser, async (req,res) => {
     res.json(userData.cartData);
 })
 
-app.listen(process.env.PORT, (error) => {
-    if(!error){
-        console.log("Server Running on process.env.PORT "+process.env.PORT)
+app.listen(port, (error) => {
+    if (!error) {
+        console.log("Server Running on PORT " + port);
+    } else {
+        console.log("Error: " + error);
     }
-    else{
-        console.log("Error: "+error)
-    }
-}) 
+});
