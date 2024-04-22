@@ -9,9 +9,7 @@ const cors = require("cors");
 const { response } = require("express");
 
 app.use(express.json());
-app.use(cors({
-    origin: ["http://localhost:3000/", "https://towntrove.onrender.com/"],
-}));
+app.use(cors());
 
 //Database connection with MongoDB
 // mongoose.connect("mongodb+srv://masterjinkal:Jinkal123@cluster0.oiumjlq.mongodb.net/towntrove");
