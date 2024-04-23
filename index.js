@@ -1,4 +1,5 @@
 //const process.env.PORT = 4000;
+require('dotenv').config(); 
 const port = process.env.PORT || 4000;
 const express = require("express");
 const app = express();
@@ -10,11 +11,19 @@ const cors = require("cors");
 const { response } = require("express");
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+
+const corsOptions = {
+    origin: 'https://towntrove.onrender.com',  // Replace with your frontend origin
+    optionsSuccessStatus: 200,  // Some legacy browsers require this
+  }
+  
+  app.use(cors(corsOptions));
 
 //Database connection with MongoDB
 // mongoose.connect("mongodb+srv://masterjinkal:Jinkal123@cluster0.oiumjlq.mongodb.net/towntrove");
 mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://masterjinkal:Jinkal123@cluster0.oiumjlq.mongodb.net/towntrove");
+
 
 //API creation
 
