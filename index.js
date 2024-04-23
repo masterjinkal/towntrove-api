@@ -1,5 +1,5 @@
 //const process.env.PORT = 4000;
-require('dotenv').config(); 
+require('dotenv').config();
 const port = process.env.PORT || 4000;
 const express = require("express");
 const app = express();
@@ -10,23 +10,15 @@ const path = require("path");
 const cors = require("cors");
 const { response } = require("express");
 
-
-const corsOptions = {
-    origin: 'https://towntrove.onrender.com',  // Replace with your frontend origin
-    optionsSuccessStatus: 200,  // Some legacy browsers require this
-  }
-  
-  app.use(cors(corsOptions));
-
 app.use(express.json());
 // app.use(cors());
 
-// const corsOptions = {
-//     origin: 'https://towntrove.onrender.com',  // Replace with your frontend origin
-//     optionsSuccessStatus: 200,  // Some legacy browsers require this
-//   }
+const corsOptions = {
+    origin: ['https://towntrove.onrender.com',  'http://localhost:3000/'],
+    optionsSuccessStatus: 200,  // Some legacy browsers require this
+  };
   
-//   app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 //Database connection with MongoDB
 // mongoose.connect("mongodb+srv://masterjinkal:Jinkal123@cluster0.oiumjlq.mongodb.net/towntrove");
@@ -48,34 +40,17 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({storage: storage}); // Multer configuration
-
-// ... other code ...
-
-// Modify: Apply upload middleware to the "/upload" route
-app.post("/upload", upload.single('product'), (req, res) => {  // Apply upload middleware
-    res.json({
-                success: 1,
-                image_url: `http://localhost:${process.env.PORT}/images/${req.file.filename}`  
-             })
-});
-
-app.use('/images', express.static('upload/images')); // Static route for uploaded images
-
-//Schema for creating products 
-
-
-// const upload = multer({storage: storage});
+const upload = multer({storage: storage})
  
-// // Creating upload end point for images
-// app.use('/images', express.static('upload/images'))
+// Creating upload end point for images
+app.use('/images', express.static('upload/images'))
 
-// app.post("/upload", upload.single('product'),(req,res)=>{
-//     res.json({
-//         success: 1,
-//         image_url: `http://localhost:${process.env.PORT}/images/${req.file.filename}`  
-//     })
-// })
+app.post("/upload", upload.single('product'),(req,res)=>{
+    res.json({
+        success: 1,
+        image_url: `http://localhost:${process.env.PORT}/images/${req.file.filename}`  
+    })
+})
 
 //Schema for creating products 
 
