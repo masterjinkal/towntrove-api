@@ -262,7 +262,7 @@ app.get("/newcollection", async (req, res) => {
     new_price: product.new_price,
     old_price: product.old_price,
     // ... other desired details
-    image: /images/${req.file.filename}, // Construct image URL using retrieved filename
+    image: product.image, // Construct image URL using retrieved filename
   }));
 
   let newcollection = modifiedProducts.slice(1).slice(-8); //using this, we will get recently added new products in newcollection array
