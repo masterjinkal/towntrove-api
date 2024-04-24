@@ -58,7 +58,8 @@ app.use("/images", express.static("upload/images"));
 app.post("/upload", upload.single("product"), (req, res) => {
   res.json({
     success: 1,
-    image_url: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    mage_url: `https://${req.get("host")}/images/${req.file.filename}`,
+    //image_url: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
   });
 });
 
